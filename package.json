@@ -1,0 +1,19 @@
+{
+  "name": "the-grey-room",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "check:supabase": "node scripts/check-supabase.mjs"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.44.0",
+    "dotenv": "^16.4.5"
+  }
+}

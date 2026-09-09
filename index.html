@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Grey Room - Jeu de Rôle Multijoueur</title>
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <h1>🎭 The Grey Room</h1>
+      <p class="subtitle">Jeu de rôle multijoueur avec parties aléatoires</p>
+      
+      <div id="connection-status" class="status">
+        <div class="loader"></div>
+        <p>Connexion à Supabase en cours...</p>
+      </div>
+      
+      <div id="game-menu" class="hidden">
+        <div class="game-modes">
+          <div class="mode-card" onclick="showCreateRoom()">
+            <h2>🎮 Créer une partie</h2>
+            <p>Lancez une nouvelle partie et invitez vos amis à vous rejoindre</p>
+          </div>
+          
+          <div class="mode-card" onclick="showJoinRoom()">
+            <h2>🚪 Rejoindre une partie</h2>
+            <p>Entrez un code de salle pour rejoindre une partie existante</p>
+          </div>
+          
+          <div class="mode-card" onclick="showScenarios()">
+            <h2>📚 Scénarios disponibles</h2>
+            <p>Découvrez tous les scénarios du jeu</p>
+          </div>
+        </div>
+      </div>
+      
+      <div id="create-room" class="hidden">
+        <h2>Créer une nouvelle partie</h2>
+        <input type="text" id="player-name" placeholder="Votre pseudo" />
+        <select id="scenario-select">
+          <option value="">Chargement des scénarios...</option>
+        </select>
+        <div style="text-align: center;">
+          <button onclick="createRoom()">🎲 Créer la partie</button>
+          <button onclick="backToMenu()">↩️ Retour</button>
+        </div>
+      </div>
+      
+      <div id="join-room" class="hidden">
+        <h2>Rejoindre une partie</h2>
+        <input type="text" id="join-player-name" placeholder="Votre pseudo" />
+        <input type="text" id="room-code" placeholder="Code de la salle (ex: ABC123)" />
+        <div style="text-align: center;">
+          <button onclick="joinRoom()">🚪 Rejoindre</button>
+          <button onclick="backToMenu()">↩️ Retour</button>
+        </div>
+      </div>
+      
+      <div id="scenarios-list" class="hidden">
+        <h2>📚 Scénarios disponibles</h2>
+        <div id="scenarios-content"></div>
+        <div style="text-align: center;">
+          <button onclick="backToMenu()">↩️ Retour</button>
+        </div>
+      </div>
+      
+      <div id="game-room" class="hidden">
+        <h2 id="room-title">Salle: <span id="room-code-display"></span></h2>
+        <div id="game-content"></div>
+        <div style="text-align: center; margin-top: 20px;">
+          <button onclick="leaveRoom()">🚪 Quitter la partie</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

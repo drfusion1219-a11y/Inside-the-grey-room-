@@ -1,0 +1,17 @@
+create extension if not exists pgcrypto;
+create table if not exists public.igr_v3_scenario_packs (scenario_id text primary key,pack jsonb not null,updated_at timestamptz not null default now());
+create table if not exists public.igr_v3_rooms (code text primary key,scenario_id text not null,status text not null default 'lobby',cycle integer not null default 0,phase text not null default 'lobby',phase_started_at timestamptz,phase_ends_at timestamptz,host_token uuid not null default gen_random_uuid(),state jsonb not null default '{}'::jsonb,created_at timestamptz not null default now(),updated_at timestamptz not null default now());
+create table if not exists public.igr_v3_players (id uuid primary key default gen_random_uuid(),room_code text not null references public.igr_v3_rooms(code) on delete cascade,pseudo text not null,seat_index integer not null,is_host boolean not null default false,public_role text not null default 'en_attente',secret_role text not null default 'en_attente',player_token uuid not null default gen_random_uuid(),private_state jsonb not null default '{}'::jsonb,ready boolean not null default false,joined_at timestamptz not null default now(),unique(room_code,seat_index),unique(room_code,player_token));
+create table if not exists public.igr_v3_events (id bigint generated always as identity primary key,room_code text not null references public.igr_v3_rooms(code) on delete cascade,event_type text not null,visibility text not null default 'public',target_player_id uuid,audience_roles text[],payload jsonb not null default '{}'::jsonb,created_at timestamptz not null default now());
+create table if not exists public.igr_v3_actions (id bigint generated always as identity primary key,room_code text not null references public.igr_v3_rooms(code) on delete cascade,player_id uuid not null references public.igr_v3_players(id) on delete cascade,cycle integer not null default 0,action_type text not null,payload jsonb not null default '{}'::jsonb,created_at timestamptz not null default now());
+create table if not exists public.igr_v3_signals (id bigint generated always as identity primary key,room_code text not null references public.igr_v3_rooms(code) on delete cascade,from_player_id uuid not null references public.igr_v3_players(id) on delete cascade,to_player_id uuid not null references public.igr_v3_players(id) on delete cascade,signal_type text not null,payload jsonb not null,created_at timestamptz not null default now());
+create index if not exists igr_v3_events_room_idx on public.igr_v3_events(room_code,id);
+create index if not exists igr_v3_actions_room_idx on public.igr_v3_actions(room_code,cycle,action_type);
+create index if not exists igr_v3_signals_to_idx on public.igr_v3_signals(room_code,to_player_id,id);
+alter table public.igr_v3_scenario_packs enable row level security;
+alter table public.igr_v3_rooms enable row level security;
+alter table public.igr_v3_players enable row level security;
+alter table public.igr_v3_events enable row level security;
+alter table public.igr_v3_actions enable row level security;
+alter table public.igr_v3_signals enable row level security;
+revoke all on public.igr_v3_scenario_packs, public.igr_v3_rooms, public.igr_v3_players, public.igr_v3_events, public.igr_v3_actions, public.igr_v3_signals from anon, authenticated;
